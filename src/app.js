@@ -6,6 +6,10 @@ const portafolioRoutes = require('./routes/portafolio.routes');
 const usuariosRoutes = require('./routes/usuarios.routes');
 const tiposDocRoutes = require('./routes/TiposDoc.routes');
 const faqRoutes = require('./routes/Faq.routes'); 
+const tipoVehiculoRoutes = require('./routes/tipoVehiculo.routes');
+const vehiculoRoutes = require('./routes/vehiculo.routes');
+const citaRoutes = require('./routes/cita.routes');
+const tipoServicioRoutes = require('./routes/tipoServicio.routes');
 require('dotenv').config();
 
 const app = express();
@@ -21,6 +25,10 @@ app.use('/api/portafolio',portafolioRoutes);
 app.use('/api/usuarios', usuariosRoutes);
 app.use('/api/tiposdoc', tiposDocRoutes);
 app.use('/api/faq', faqRoutes); 
+app.use('/api/tipoVehiculos', tipoVehiculoRoutes);
+app.use('/api/vehiculos', vehiculoRoutes);
+app.use('/api/citas', citaRoutes);
+app.use('/api/tiposservicios', tipoServicioRoutes);
 
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
