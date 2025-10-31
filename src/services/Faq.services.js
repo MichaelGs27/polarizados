@@ -2,38 +2,38 @@
 
 const db = require('../config/db.config');
 
-// Obtiene todas las preguntas frecuentes
+// Obtiene todas las questions frecuentes
 exports.findAll = async () => {
-    const [rows] = await db.execute('SELECT * FROM faq');
+    const [rows] = await db.execute('SELECT * FROM faqs');
     return rows;
 };
 
-// Obtiene una pregunta frecuente por su ID
-exports.findByIdFaq = async (idFaq) => {
-    const [rows] = await db.execute('SELECT * FROM faq WHERE idFaq = ?', [idFaq]);
+// Obtiene una question frecuente por su ID
+exports.findByidFAQ = async (idFAQ) => {
+    const [rows] = await db.execute('SELECT * FROM faqs WHERE idFAQ = ?', [idFAQ]);
     return rows[0];
 };
 
-// Crea una nueva pregunta frecuente
+// Crea una nueva question frecuente
 exports.create = async (newFaq) => {
     const [result] = await db.execute(
-        'INSERT INTO faq (pregunta, respuesta, idServicio) VALUES (?, ?, ?)',
-        [newFaq.pregunta, newFaq.respuesta, newFaq.idServicio] 
+        'INSERT INTO faqs (question, answer, idService) VALUES (?, ?, ?)',
+        [newFaq.question, newFaq.answer, newFaq.idService] 
     );
     return { idFAQ: result.insertId, ...newFaq };
 };
 
-// Actualiza una pregunta frecuente existente
-exports.update = async (idFaq, updatedFaq) => {
+// Actualiza una question frecuente existente
+exports.update = async (idFAQ, updatedFaq) => {
     const [result] = await db.execute(
-        'UPDATE faq SET pregunta = ?, respuesta = ?, idServicio = ? WHERE idFAQ = ?',
-        [updatedFaq.pregunta, updatedFaq.respuesta, updatedFaq.idServicio, idFaq]
+        'UPDATE faqs SET question = ?, answer = ?, idService = ? WHERE idFAQ = ?',
+        [updatedFaq.question, updatedFaq.answer, updatedFaq.idService, idFAQ]
     );
     return result.affectedRows > 0;
 };
 
-// Elimina una pregunta frecuente
-exports.remove = async (idFaq) => {
-    const [result] = await db.execute('DELETE FROM faq WHERE idFaq = ?', [idFaq]);
+// Elimina una question frecuente
+exports.remove = async (idFAQ) => {
+    const [result] = await db.execute('DELETE FROM faqs WHERE idFAQ = ?', [idFAQ]);
     return result.affectedRows > 0;
 };
