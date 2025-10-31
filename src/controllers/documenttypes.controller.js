@@ -1,14 +1,14 @@
-// src/controllers/TiposDoc.controller.js
+// src/controllers/documenttypes.controller.js
 
-const TiposDocService = require('../services/TiposDoc.service');
+const documenttypesService = require('../services/documenttypes.service');
 
-// Obtener todos los TiposDoc
+// Obtener todos los documenttypes
 exports.findAll = async (req, res) => {
     try {
-        const tiposDoc = await TiposDocService.findAll();
-        res.status(200).json(tiposDoc);
+        const documenttypes = await documenttypesService.findAll();
+        res.status(200).json(documenttypes);
     } catch (error) {
-        res.status(500).json({ message: "Error al obtener TiposDoc", error });
+        res.status(500).json({ message: "Error al obtener documenttypes", error });
     }
 };
 
@@ -16,9 +16,9 @@ exports.findAll = async (req, res) => {
 exports.findById = async (req, res) => {
     try {
         // CORRECCIÓN: Usar el nombre de la función correcta del servicio
-        const tipoDoc = await TiposDocService.findByIdTipoDoc(req.params.id);
+        const tipoDoc = await documenttypesService.findById(req.params.id);
         if (!tipoDoc) {
-            // CORRECCIÓN: Mensaje específico para TiposDoc
+            // CORRECCIÓN: Mensaje específico para documenttypes
             return res.status(404).json({ message: "Tipo de documento no encontrado" });
         }
         res.status(200).json(tipoDoc);
@@ -30,7 +30,7 @@ exports.findById = async (req, res) => {
 // Crear un nuevo TipoDoc
 exports.create = async (req, res) => {
     try {
-        const newTipoDoc = await TiposDocService.create(req.body);
+        const newTipoDoc = await documenttypesService.create(req.body);
         res.status(201).json(newTipoDoc);
     } catch (error) {
         res.status(500).json({ message: "Error al crear tipo de documento", error });
@@ -40,9 +40,9 @@ exports.create = async (req, res) => {
 // Actualizar un TipoDoc existente
 exports.update = async (req, res) => {
     try {
-        const updated = await TiposDocService.update(req.params.id, req.body);
+        const updated = await documenttypesService.update(req.params.id, req.body);
         if (!updated) {
-            // CORRECCIÓN: Mensaje específico para TiposDoc
+            // CORRECCIÓN: Mensaje específico para documenttypes
             return res.status(404).json({ message: "Tipo de documento no encontrado" });
         }
         res.status(200).json({ message: "Tipo de documento actualizado exitosamente" });
@@ -54,9 +54,9 @@ exports.update = async (req, res) => {
 // Eliminar un TipoDoc
 exports.remove = async (req, res) => {
     try {
-        const removed = await TiposDocService.remove(req.params.id);
+        const removed = await documenttypesService.remove(req.params.id);
         if (!removed) {
-            // CORRECCIÓN: Mensaje específico para TiposDoc
+            // CORRECCIÓN: Mensaje específico para documenttypes
             return res.status(404).json({ message: "Tipo de documento no encontrado" });
         }
         res.status(200).json({ message: "Tipo de documento eliminado exitosamente" });

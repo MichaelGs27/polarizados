@@ -1,0 +1,21 @@
+#Dependencias
+/node_modules
+/npm-debug.log=
+/yarn-error.log
+#production / build files
+/dist
+/build
+#environment files
+# es CRUCIAL ignorar este archivo .env ya que contiene información sensible
+.env
+#runtime data
+/pids
+/log
+*pid
+*.send
+*.log
+#Editor/OS specific files (Archvios temporales de editores y OS)
+.DS_Store
+*vscode/
+#Nodemon (Si genera archvivos temporales especificos, aunque generalmente no es necesario)
+.nodemon
