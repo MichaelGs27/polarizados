@@ -1,8 +1,8 @@
-const testimonioService = require('../services/testimonio.service');
+const testimonyService = require('../services/testimony.service');
 
 exports.findAll = async (req, res) => {
     try {
-        const testimonios = await testimonioService.findAll();
+        const testimonios = await testimonyService.findAll();
         res.status(200).json(testimonios);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener testimonios", error });
@@ -11,28 +11,28 @@ exports.findAll = async (req, res) => {
 
 exports.findById = async (req, res) => {
     try {
-        const testimonio = await testimonioService.findById(req.params.id);
-        if (!testimonio) {
+        const testimony = await testimonyService.findById(req.params.id);
+        if (!testimony) {
             return res.status(404).json({ message: "Testimonio no encontrado" });
         }
-        res.status(200).json(testimonio);
+        res.status(200).json(testimony);
     } catch (error) {
-        res.status(500).json({ message: "Error al obtener testimonio", error });
+        res.status(500).json({ message: "Error al obtener testimony", error });
     }
 };
 
 exports.create = async (req, res) => {
     try {
-        const newservicio = await testimonioService.create(req.body);
+        const newservicio = await testimonyService.create(req.body);
         res.status(201).json(newservicio);
     } catch (error) {
-        res.status(500).json({ message: "Error al crear testimonio", error: error.message });
+        res.status(500).json({ message: "Error al crear testimony", error: error.message });
     }
 };
 
 exports.update = async (req, res) => {
     try {
-        const updated = await testimonioService.update(req.params.id, req.body);
+        const updated = await testimonyService.update(req.params.id, req.body);
         if (!updated) {
             return res.status(404).json({ message: "Testimonio no encontrado" });
         }
@@ -44,7 +44,7 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
     try {
-        const removed = await testimonioService.remove(req.params.id);
+        const removed = await testimonyService.remove(req.params.id);
         if (!removed) {
             return res.status(404).json({ message: "Testimonio no encontrado" });
         }

@@ -1,11 +1,11 @@
-const PortafolioService = require('../services/portafolio.service');
-const portafolioService = new PortafolioService();
+const UsersService = require('../services/users.service');
+const usersService = new UsersService();
 
-class portafolioController {
+class UsersController {
     async getPublicProfile(req, res) {
         try {
-            const portafolioId = req.params.idUser;
-            const profile = await portafolioService.getPublicProfile(portafolioId);
+            const userId = req.params.idUser;
+            const profile = await usersService.getPublicProfile(userId);
             
             if (!profile) {
                 return res.status(404).json({ message: 'Usuario no encontrado' });
@@ -19,7 +19,7 @@ class portafolioController {
 
     async getProfile(req, res) {
         try {
-            const profile = await portafolioService.getProfile(req.users.idUser);
+            const profile = await usersService.getProfile(req.users.idUser);
             res.json(profile);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -28,7 +28,7 @@ class portafolioController {
 
     async update(req, res) {
         try {
-            const updatedUsuario = await portafolioService.update(req.users.idUser, req.body);
+            const updatedUsuario = await usersService.update(req.users.idUser, req.body);
             res.json(updatedUsuario);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -37,7 +37,7 @@ class portafolioController {
 
     async delete(req, res) {
         try {
-            await portafolioService.delete(req.users.idUser);
+            await usersService.delete(req.users.idUser);
             res.json({ message: 'Usuario eliminado correctamente' });
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -46,8 +46,8 @@ class portafolioController {
 
     async changePassword(req, res) {
         try {
-            const { oldPassword, newPassword } = req.body;
-            await portafolioService.changePassword(req.users.idUser, oldPassword, newPassword);
+            const { oldpassword, newpassword } = req.body;
+            await usersService.changePassword(req.users.idUser, oldpassword, newpassword);
             res.json({ message: 'Contraseña actualizada correctamente' });
         } catch (error) {
             res.status(400).json({ message: error.message });
@@ -56,7 +56,7 @@ class portafolioController {
 
     async getDashboard(req, res) {
         try {
-            const dashboard = await portafolioService.getDashboard(req.users.idUser);
+            const dashboard = await usersService.getDashboard(req.users.idUser);
             res.json(dashboard);
         } catch (error) {
             res.status(500).json({ message: error.message });
@@ -64,4 +64,4 @@ class portafolioController {
     }
 }
 
-module.exports = new portafolioController();
+module.exports = new UsersController();

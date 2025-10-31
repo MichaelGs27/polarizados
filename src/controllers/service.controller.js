@@ -1,8 +1,8 @@
-const servicioService = require('../services/servicio.service');
+const servicesService = require('../services/service.service');
 
 exports.findAll = async (req, res) => {
     try {
-        const servicios = await servicioService.findAll();
+        const servicios = await servicesService.findAll();
         res.status(200).json(servicios);
     } catch (error) {
         res.status(500).json({ message: "Error al obtener servicios", error });
@@ -11,7 +11,7 @@ exports.findAll = async (req, res) => {
 
 exports.findById = async (req, res) => {
     try {
-        const servicio = await servicioService.findById(req.params.id);
+        const servicio = await servicesService.findById(req.params.id);
         if (!servicio) {
             return res.status(404).json({ message: "Servicio no encontrado" });
         }
@@ -23,7 +23,7 @@ exports.findById = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const newservicio = await servicioService.create(req.body);
+        const newservicio = await servicesService.create(req.body);
         res.status(201).json(newservicio);
     } catch (error) {
         res.status(500).json({ message: "Error al crear servicio", error: error.message });
@@ -32,7 +32,7 @@ exports.create = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
-        const updated = await servicioService.update(req.params.id, req.body);
+        const updated = await servicesService.update(req.params.id, req.body);
         if (!updated) {
             return res.status(404).json({ message: "Servicio no encontrado" });
         }
@@ -44,7 +44,7 @@ exports.update = async (req, res) => {
 
 exports.remove = async (req, res) => {
     try {
-        const removed = await servicioService.remove(req.params.id);
+        const removed = await servicesService.remove(req.params.id);
         if (!removed) {
             return res.status(404).json({ message: "Servicio no encontrado" });
         }
