@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const faqController = require('../controllers/Faq.controller');
+const faqController = require('../controllers/faq.controller');
 
 router.get('/', faqController.findAll);
 router.get('/:id', faqController.findById);

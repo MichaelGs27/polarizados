@@ -1,0 +1,23 @@
+# === DEPENDENCIAS ===
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# === COMPILACIÓN / PRODUCCIÓN ===
+dist/
+build/
+
+# === VARIABLES DE ENTORNO ===
+.env
+
+# === DATOS DE RUNTIME ===
+pids/
+logs/
+*.pid
+*.seed
+*.log
+
+# === ARCHIVOS DEL SISTEMA / EDITORES ===
+.DS_Store
+.vscode/
+.nodemon

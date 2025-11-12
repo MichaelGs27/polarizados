@@ -44,7 +44,7 @@ class AuthController {
             }
 
             const hashedpassword = bcrypt.hashSync(password, 10);
-            //CREATE USER
+
             const newUser = await usersService.create({
                 firstName,
                 lastName,
@@ -56,34 +56,34 @@ class AuthController {
                 password: hashedpassword
             });
 
-            // res.status(201).json({
-            //     message: "Usuario registrado exitosamente",
-            //     idUser: users.idUser
-            // });
-             const token = jwt.sign(
-            { email: users.email, idUser: users.idUser }, 
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES }
+            const token = jwt.sign(
+                { email: newUser.email, idUser: newUser.idUser }, 
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRES }
             );
-            res.json({ token });
 
-         
-            // ENVIAR CODIGO DE VERIFICAICON 
             console.log("Intentando enviar correo a:", newUser.email);
-            const mail=await sendMailVerification(newUser.email, token)
-            console.log("CORREO ENVIADO", mail.messageId)
-            res.status(201).json({
+            const mail = await sendMailVerification(newUser.email, token);
+            console.log("CORREO ENVIADO", mail.messageId);
+
+            return res.status(201).json({
                 message: "Usuario registrado exitosamente. Revisa tu correo para verificar tu cuenta.",
-                idUser: newUser.idUser
+                idUser: newUser.idUser,
+                token
             });
-        
-        
+
         } catch (error) {
             console.error("Error en registro:", error); 
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
-
     }
+
+
+
+
+
+
+
 }
 
         

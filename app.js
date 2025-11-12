@@ -1,17 +1,18 @@
 require('dotenv').config();
 const express = require('express');
 // Se importan las rutas de la API
-const promotionsRoutes = require('./routes/promotions.routes');
-const servicesRoutes = require('./routes/services.routes');
-const testimoniesRoutes = require('./routes/testimonies.routes');
-const portfolioRoutes = require('./routes/portfolio.routes');
-const usersRoutes = require('./routes/users.routes');
-const documenttypesRoutes = require('./routes/documenttypes.routes');
-const faqRoutes = require('./routes/Faq.routes');
-const vehicletypesRoutes = require('./routes/vehicletypes.routes');
-const vehiclesRoutes = require('./routes/vehicles.routes');
-const appointmentsRoutes = require('./routes/appointments.routes');
-const servicetypesRoutes = require('./routes/servicetypes.routes');
+const promotionsRoutes = require('./src/routes/promotions.routes');
+const servicesRoutes = require('./src/routes/services.routes');
+const testimoniesRoutes = require('./src/routes/testimonies.routes');
+const portfolioRoutes = require('./src/routes/portfolio.routes');
+const usersRoutes = require('./src/routes/users.routes');
+const documenttypesRoutes = require('./src/routes/documenttypes.routes');
+const faqRoutes = require('./src/routes/faq.routes');
+const vehicletypesRoutes = require('./src/routes/vehicletypes.routes');
+const vehiclesRoutes = require('./src/routes/vehicles.routes');
+const appointmentsRoutes = require('./src/routes/appointments.routes');
+const servicetypesRoutes = require('./src/routes/servicetypes.routes');
+const authRoutes = require('./src/routes/auth.routes');
 
 // Inicialización de Express y configuración de puerto
 const app = express();
@@ -54,6 +55,8 @@ app.use('/api/vehicletypes', vehicletypesRoutes);
 app.use('/api/vehicles', vehiclesRoutes);
 app.use('/api/appointments', appointmentsRoutes);
 app.use('/api/servicetypes', servicetypesRoutes);
+app.use('/api/auth', authRoutes);
+
 
 // Manejo de rutas no encontradas (404 Not Found)
 // Debe ir después de todas las rutas válidas

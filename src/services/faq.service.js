@@ -9,7 +9,7 @@ exports.findAll = async () => {
 };
 
 // Obtiene una question frecuente por su ID
-exports.findByidFAQ = async (idFAQ) => {
+exports.findByIdFaq = async (idFAQ) => {
     const [rows] = await db.execute('SELECT * FROM faqs WHERE idFAQ = ?', [idFAQ]);
     return rows[0];
 };
@@ -24,7 +24,7 @@ exports.create = async (newFaq) => {
 };
 
 // Actualiza una question frecuente existente
-exports.update = async (idFAQ, updatedFaq) => {
+exports.updateFaq = async (idFAQ, updatedFaq) => {
     const [result] = await db.execute(
         'UPDATE faqs SET question = ?, answer = ?, idService = ? WHERE idFAQ = ?',
         [updatedFaq.question, updatedFaq.answer, updatedFaq.idService, idFAQ]
@@ -33,7 +33,7 @@ exports.update = async (idFAQ, updatedFaq) => {
 };
 
 // Elimina una question frecuente
-exports.remove = async (idFAQ) => {
+exports.removeFaq = async (idFAQ) => {
     const [result] = await db.execute('DELETE FROM faqs WHERE idFAQ = ?', [idFAQ]);
     return result.affectedRows > 0;
 };

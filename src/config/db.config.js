@@ -1,17 +1,27 @@
 const mysql = require('mysql2');
-const path = require('path'); // 👈 ESTA DEBE ESTAR ANTES DE usar path.resolve
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
 
+require('dotenv').config();
 
-const connection = mysql.createPool({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT ,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME,
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0  
-});
-module.exports = connection.promise();
-console.log('DB Config:', process.env.DB_HOST, process.env.DB_USER, process.env.DB_PASSWORD, process.env.DB_NAME);
+const config = {
+    // Configuración de la base de datos
+    db: {
+        host: process.env.DB_HOST || 'localhost',
+        user: process.env.DB_USER || 'root',
+        password: process.env.DB_PASSWORD || '',
+        database: process.env.DB_NAME || 'polarized',
+        port: process.env.DB_PORT || 3307
+    },
+    
+    // Configuración de JWT
+    jwt: {
+        secret: process.env.JWT_SECRET || 'your-super-secret-key',
+        expiresIn: process.env.JWT_EXPIRES || '24h'
+    },
+    
+    // Configuración del servidor
+    server: {
+        port: process.env.PORT || 3000
+    }
+};
+
+module.exports = config;
