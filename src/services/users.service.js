@@ -1,74 +1,104 @@
-const db = require('../config/db.config');
-const bcrypt = require('bcrypt'); 
-const SALT_ROUNDS = 10; 
+const mysql = require('mysql2/promise');
+const bcrypt = require('bcryptjs');
+const config = require('../config/db.config');
 
-// Obtención de todos los users
-exports.findAll = async () => {
-    const [rows] = await db.execute('SELECT idUser, firstName, lastName, email, phone, address, idDocumentType, documentNumber FROM users');
-    return rows;
-};
-
-// Obtener usuario por ID
-exports.findByidUser = async (idUser) => {
-    // Se elimina 'role' del SELECT
-    const [rows] = await db.execute('SELECT idUser, firstName, lastName, email, phone, address, idDocumentType, documentNumber, password FROM users WHERE idUser = ?', [idUser]);
-    return rows[0];
-};
-
-// Funcion para encontrar usuario por email (para login)
-exports.findByEmail = async (email) => {
-    const [rows] = await db.execute('SELECT idUser, firstName, lastName, email, password FROM users WHERE email = ?', [email]);
-    return rows[0];
-};
-
-// Creación de nuevo usuario con contraseña hasheada    
-exports.create = async (newUsuario) => {
-    // 1. Hashear la contraseña antes de insertarla
-    if (!newUsuario.password) {
-        throw new Error("La contraseña es obligatoria para el registro.");
+class UserService {
+    constructor() {
+        this.connection = mysql.createPool(config.db);
     }
-    const hashedpassword = await bcrypt.hash(newUsuario.password, SALT_ROUNDS);
 
-    // FUNCIÓN DE AYUDA: Asegura que undefined se convierta a null
-    const checkUndefined = (value) => value !== undefined ? value : null;
-    
-    // 2. Ejecutar la inserción:
-    const [result] = await db.execute(
-        'INSERT INTO users (firstName, lastName, email, phone, address, idDocumentType, documentNumber, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [
-            checkUndefined(newUsuario.firstName), 
-            checkUndefined(newUsuario.lastName), 
-            checkUndefined(newUsuario.email), 
-            checkUndefined(newUsuario.phone), 
-            checkUndefined(newUsuario.address), 
-            checkUndefined(newUsuario.idDocumentType), 
-            checkUndefined(newUsuario.documentNumber),
-            hashedpassword 
-        ]
-    );
-    // Excluir la contraseña del objeto retornado
-    const { password, ...userData } = newUsuario;
-    return { idUser: result.insertId, ...userData };
-};
-
-// Actualización de usuario con opción de cambiar contraseña
-exports.update = async (idUser, updatedUsuario) => {
-    let passwordHash = updatedUsuario.password;
-    let queryParams = [updatedUsuario.firstName, updatedUsuario.lastName, updatedUsuario.email, updatedUsuario.phone, updatedUsuario.address, updatedUsuario.idDocumentType, updatedUsuario.documentNumber];
-    let query = 'UPDATE users SET firstName = ?, lastName = ?, email = ?, phone = ?, address = ?, idDocumentType = ?, documentNumber = ?';
-    // Si se proporciona una nueva contraseña, hashearla y agregarla a la consulta
-    if (updatedUsuario.password) {
-        passwordHash = await bcrypt.hash(updatedUsuario.password, SALT_ROUNDS);
-        query += ', password = ?';
-        queryParams.push(passwordHash);
+    async findByEmail(email) {
+        const [rows] = await this.connection.execute(
+            'SELECT * FROM users WHERE email = ?',
+            [email]
+        );
+        return rows[0];
     }
-    query += ' WHERE idUser = ?';
-    queryParams.push(idUser);
-    const [result] = await db.execute(query, queryParams);
-    return result.affectedRows > 0;
-};
-// Eliminación de usuario por id
-exports.remove = async (idUser) => {
-    const [result] = await db.execute('DELETE FROM users WHERE idUser = ?', [idUser]); 
-    return result.affectedRows > 0;
-};
+    async create(userData) {
+        const {firstName, lastName, email, phone, address, idDocumentType, documentNumber, password} = userData;
+        // cons = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        
+        const [result] = await this.connection.execute(
+            'INSERT INTO users (firstName, lastName, email, phone, address, idDocumentType, documentNumber, password) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [firstName, lastName, email, phone, address, idDocumentType, documentNumber, password]
+        );
+        
+        return {
+            idUser: result.insertId,
+            firstName,
+            lastName,
+            email,
+            phone,
+            address,
+            idDocumentType,
+            documentNumber,
+            password
+            
+        };
+    }
+
+    async getProfile(userId) {
+        const [rows] = await this.connection.execute(
+            'SELECT firstName, email FROM users WHERE idUser = ?',
+            [userId]
+        );
+        return rows[0];
+    }
+
+    async getPublicProfile(userId) {
+        const [rows] = await this.connection.execute(
+            'SELECT firstName FROM users WHERE idUser = ?',
+            [userId]
+        );
+        return rows[0];
+    }
+
+    async update(userId, userData) {
+        const {firstName, lastName, email, phone, address, idDocumentType, documentNumber, password } = userData;
+        await this.connection.execute(
+            'UPDATE users SET firstName = ?, lastName = ?, email = ?,phone=?, address = ?, idDocumentType = ?, documentNumber = ?,password = ? WHERE idUser = ?',
+            [firstName, lastName, email, phone, address, idDocumentType, documentNumber, password, userId]
+        );
+        return this.getProfile(userId);
+    }
+
+    async delete(userId) {
+        await this.connection.execute(
+            'DELETE FROM users WHERE idUser = ?',
+            [userId]
+        );
+        return true;
+    }
+
+    async changepassword(userId, oldpassword, newpassword) {
+        const [user] = await this.connection.execute(
+            'SELECT password FROM users WHERE idUser = ?',
+            [userId]
+        );
+
+        if (!user[0] || !bcrypt.compareSync(oldpassword, user[0].password)) {
+            throw new Error('Contraseña actual incorrecta');
+        }
+
+        const hashedcontraseña = bcrypt.hashSync(newpassword, 10);
+        await this.connection.execute(
+            'UPDATE users SET password = ? WHERE idUser = ?',
+            [hashedcontraseña, userId]
+        );
+        return true;
+    }
+
+    async getDashboard(userId) {
+        // Aquí puedes agregar lógica específica del dashboard
+        const [usuarioInfo] = await this.connection.execute(
+            'SELECT  firstName, email FROM users WHERE idUser = ?',
+            [userId]
+        );
+        return {
+            user: usuarioInfo[0],
+            // Agrega más datos según necesites
+        };
+    }
+}
+
+module.exports = UserService;
